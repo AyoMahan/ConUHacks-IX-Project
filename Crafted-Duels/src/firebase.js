@@ -10,6 +10,9 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-const app = initializeApp(firebaseConfig);
+// Ensure Firebase is not initialized multiple times
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+
 export const db = getFirestore(app);
-console.log(firebaseConfig)
+
+console.log("Firebase initialized:", firebaseConfig);

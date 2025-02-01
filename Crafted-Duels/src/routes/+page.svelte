@@ -5,8 +5,7 @@
     listenToGame,
     gameState,
     submitWeapon,
-    determineWinner,
-  } from "./game.js";
+  } from "../game";
   let challenge = "Survive an alien invasion";
   let weapon = "";
   let playerId = "player-" + Math.floor(Math.random() * 1000); // Random player ID
@@ -33,11 +32,6 @@
     await submitWeapon(gameId, playerId, weapon);
   }
 
-  async function pickWinner() {
-    if ($gameState) {
-      await determineWinner(gameId, $gameState.challenge, $gameState.weapons);
-    }
-  }
 </script>
 
 <h1>Multiplayer AI Game</h1>
@@ -65,5 +59,4 @@
 
   <input bind:value={weapon} placeholder="Enter your weapon" />
   <button on:click={submit}>Submit Weapon</button>
-  <button on:click={pickWinner}>Pick Winner (AI)</button>
 {/if}

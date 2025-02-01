@@ -6,6 +6,7 @@
     gameState,
     submitWeapon,
   } from "../game";
+  import Timer from "$lib/components/Timer.svelte";
   let challenge = "Survive an alien invasion";
   let weapon = "";
   let playerId = "player-" + Math.floor(Math.random() * 1000); // Random player ID

@@ -3,13 +3,12 @@ import { doc, setDoc, updateDoc, onSnapshot, getDoc } from "firebase/firestore";
 import { writable } from "svelte/store";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-
-export const gameState = writable(null);
+import { gameState } from "./stores";
 
 export async function createGame(challenge) {
     const gameId = uuidv4();
     const gameRef = doc(db, "games", gameId);
-    await setDoc(gameRef, { challenge, weapons: {}, winner: null });
+    await setDoc(gameRef, { challenge, players: {}, winner: null });
 
     return gameId;
 }
@@ -23,13 +22,15 @@ export function listenToGame(gameId) {
     });
 }
 
-export async function joinGame(gameId) {
-    console.log(gameId)
+async function joinGame(gameId, playerName, playerAvatar) {
     const gameRef = doc(db, "games", gameId);
     const gameSnap = await getDoc(gameRef);
 
     if (gameSnap.exists()) {
         console.log("Joined game:", gameId);
+        await updateDoc(gameRef, {
+            [`players.${playerId}`]: { name: playerName, avatar: playerAvatar }
+        });
         return true;
     } else {
         console.error("Game does not exist!");

@@ -10,6 +10,7 @@
         listenToLobby,
         lobbyPlayers,
         updatePlayerInfo,
+        startGame
     } from "../../game";
     import { goto } from "$app/navigation";
     let playerName = get(name) ?? "Player 1";
@@ -19,6 +20,7 @@
     let playerAvatar = "🧑‍🚀";
     let players = [];
     let roomCode = get(lobbyId);
+    name.set(playerName);
     const avatars = [
         "🧑‍🚀",
         "🧑‍🎤",
@@ -88,6 +90,7 @@
         let index = players.findIndex((p) => p.name == oldName);
         players[index].name = newName;
         oldName = newName;
+        name.set(newName);
     }
 
     onMount(() => {
@@ -97,6 +100,7 @@
             players = data;
         });
     });
+
 </script>
 
 <div class="lobby">
@@ -115,7 +119,11 @@
 
     <h2 class="fade-in">
         Choose your avatar:
-        <select bind:value={playerAvatar} on:change={updateAvatar} class="glow-hover">
+        <select
+            bind:value={playerAvatar}
+            on:change={updateAvatar}
+            class="glow-hover"
+        >
             {#each avatars as avatar}
                 <option value={avatar}>{avatar}</option>
             {/each}
@@ -150,9 +158,7 @@
         >
         <button
             class="button start-btn neon-button"
-            on:click={() =>
-                navigateTo(`/play/${roomCode}?playerId=${playerName}`)}
-            >🚀 Start</button
+            on:click={() => startGame(roomCode)}>🚀 Start</button
         >
     </div>
 </div>
@@ -186,11 +192,12 @@
         }
     }
 
-    h1, h2{
+    h1,
+    h2 {
         font-weight: bold;
     }
 
-    .name-input::placeholder{
+    .name-input::placeholder {
         color: darkgrey;
     }
 
@@ -210,13 +217,13 @@
         color: antiquewhite;
         flex-grow: 1;
         overflow-y: scroll;
-		scrollbar-width: none;
-		-ms-overflow-style: none; 
-	}
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
 
-	.lobby::-webkit-scrollbar {
-		display: none;
-	}
+    .lobby::-webkit-scrollbar {
+        display: none;
+    }
 
     input,
     select {
@@ -254,7 +261,7 @@
         align-items: center;
         user-select: none;
         background-color: rgba(214, 122, 9, 0.8);
-        color: antiquewhite;    
+        color: antiquewhite;
         transition: background-color 0.3s ease-in-out;
     }
 

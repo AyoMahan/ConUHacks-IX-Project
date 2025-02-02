@@ -3,15 +3,16 @@ import { doc, setDoc, updateDoc, onSnapshot, getDoc, arrayUnion } from "firebase
 import { writable } from "svelte/store";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { goto } from "$app/navigation";
 
 export const gameState = writable(null);
 export const lobbyPlayers = writable([]); // Store for real-time players
 
-export async function createGame(challenge) {
+export async function createGame() {
     const gameId = Math.random().toString(36).substr(2, 4).toUpperCase();
     const gameRef = doc(db, "games", gameId);
     await setDoc(gameRef, {
-        challenge,
+        isGameStarted: false,
         winner: null,
         players: [
             {
@@ -29,7 +30,14 @@ export function listenToGame(gameId) {
     const gameRef = doc(db, "games", gameId);
     return onSnapshot(gameRef, (docSnap) => {
         if (docSnap.exists()) {
-            gameState.set(docSnap.data());
+            const gameData = docSnap.data();
+            gameState.set(gameData);
+
+            // Check if the game has started
+            if (gameData.gameStarted) {
+                console.log("Game started, redirecting players to /play...");
+                goto(`/play/${gameId}`);
+            }
         }
     });
 }
@@ -115,4 +123,14 @@ export async function updatePlayerInfo(gameId, oldName, newName, newAvatar) {
         console.error("Game does not exist!");
         return false;
     }
+}
+
+export async function startGame(gameId) {
+    const gameRef = doc(db, "games", gameId);
+
+    await updateDoc(gameRef, {
+        gameStarted: true,
+    });
+
+    console.log("Game has started!");
 }

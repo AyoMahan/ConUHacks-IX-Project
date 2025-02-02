@@ -3,18 +3,17 @@
   import { submitWeapon } from "../../../game";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
+  import { get } from "svelte/store";
+    import { name } from "$lib/stores";
 
   export let data;
   const gameId = data.gameId;
-  let playerId = "";
+  let playerId = get("name");
   let box1 = "";
   let box2 = "";
   let box3 = "";
 
   onMount(() => {
-    const urlParams = new URLSearchParams($page.url.search);
-    playerId = urlParams.get("playerId");
-    console.log(playerId);
   });
 
   function handleClick() {

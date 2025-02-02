@@ -1,10 +1,21 @@
-<div class="rules-btn">
+<script>
+    import { createEventDispatcher } from 'svelte';
+
+    const dispatch = createEventDispatcher();
+
+    function click() {
+        dispatch('click');
+    }
+
+</script>
+
+<button class="rules-btn" on:click={click}>
     <p>?</p>
-</div>
+</button>
 
 <style>
     .rules-btn {
-        outline: 2px #FFDEAD solid;
+        border: 2px #FFDEAD solid;
         border-radius: 20px;
         width: 3em;
         height: 3em;

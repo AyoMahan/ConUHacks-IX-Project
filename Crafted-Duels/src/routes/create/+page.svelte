@@ -8,9 +8,9 @@
 
 <a class="how-to-play" href="https://youtu.be/dQw4w9WgXcQ">How to play</a>
 
-{#if won}
+<!-- {#if won} -->
 	<div>Aaahhh...</div>
-{/if}
+<!-- {/if} -->
 
 <style>
 	.how-to-play {

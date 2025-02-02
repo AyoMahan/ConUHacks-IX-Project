@@ -1,6 +1,7 @@
 <script>
   import { goto } from "$app/navigation";
   import Rules from "$lib/components/Rules.svelte";
+  import PopupMessage from "$lib/components/PopupMessage.svelte";
   import {
     createGame,
     joinGame,
@@ -14,6 +15,7 @@
   let gameId = "";
   let joiningGameId = "";
   let inGame = false;
+  let showHelpPopup = false;
 
   function navigateTo(path) {
     goto(path);
@@ -36,6 +38,14 @@
 
   async function submit() {
     await submitWeapon(gameId, playerId, weapon);
+  }
+
+  function openHelpPopup() {
+    showHelpPopup = true;
+  }
+
+  function closeHelpPopup() {
+    showHelpPopup = false;
   }
 </script>
 
@@ -68,10 +78,14 @@
       </div>
     </div>
     <div class="footer">
-      <Rules />
+      <Rules on:click={openHelpPopup} />
     </div>
   </div>
 </div>
+
+{#if showHelpPopup}
+    <PopupMessage message="This is a helpful popup." on:close={closeHelpPopup} />
+{/if}
 
 <style>
   .main-menu-outer-container {
@@ -125,7 +139,7 @@
   .create-btn,
   .join-btn {
     font-size: 34px;
-    outline: 4px #FFDEAD solid;
+    outline: 4px #ffdead solid;
     border-radius: 10px;
     height: 2em;
     width: 10em;
@@ -136,10 +150,11 @@
     align-items: center;
     user-select: none;
     background-color: rgba(214, 122, 9, 0.8);
-    color: #FFDEAD;
+    color: #ffdead;
   }
 
-  .create-btn:hover, .join-btn:hover{
+  .create-btn:hover,
+  .join-btn:hover {
     background-color: #8a4f07;
     cursor: pointer;
   }

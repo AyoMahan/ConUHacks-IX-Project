@@ -165,7 +165,7 @@ export async function getWeapons1(gameId) {
         // Get weapons from the first player
         const players = gameSnap.data().players;
         if (players && players[0]) {
-            return players[0].weapons || []; // Access the 'weapons' property directly
+            return players[0].weapons || [];
         } else {
             console.error("Player data is not available.");
             return [];

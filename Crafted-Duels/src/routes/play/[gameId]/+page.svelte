@@ -17,7 +17,7 @@
 
   onMount(() => {
     resetGameFlag(gameId);
-    listenToGame(roomCode);
+    listenToGame(gameId);
   });
 
   function handleClick() {

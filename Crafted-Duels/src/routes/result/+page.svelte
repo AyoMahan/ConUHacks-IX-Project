@@ -12,9 +12,9 @@
   // Function to fetch the image and description from OpenAI API
   async function generateWeaponAndImage() {
     console.log('hi');
-    let player1Items = getWeapons1(get(lobbyId));
+    let player1Items = await getWeapons1(get(lobbyId));
     console.log(player1Items);
-    let player2Items = getWeapons2(get(lobbyId));
+    let player2Items = await getWeapons2(get(lobbyId));
     console.log(player2Items);
     const prompt = `
       Player 1 has the following items: ${player1Items.join(', ')}.

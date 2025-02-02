@@ -63,7 +63,7 @@ export async function joinGame(gameId, playerName) {
 
     if (gameSnap.exists()) {
         await updateDoc(gameRef, {
-            players: arrayUnion({ name: playerName, avatar: "👤", weapons: [] }),
+            players: arrayUnion({ name: playerName, avatar: "🧑‍🚀", weapons: [] }),
         });
 
         console.log(`Player ${playerName} joined game ${gameId}`);

@@ -1,6 +1,6 @@
 <script>
   import Timer from "$lib/components/Timer.svelte";
-  import { submitWeapon, resetGameFlag } from "../../../game";
+  import { submitWeapon, resetGameFlag, listenToGame } from "../../../game";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
@@ -17,6 +17,7 @@
 
   onMount(() => {
     resetGameFlag(gameId);
+    listenToGame(roomCode);
   });
 
   function handleClick() {

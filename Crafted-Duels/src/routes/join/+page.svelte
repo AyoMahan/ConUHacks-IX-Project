@@ -1,5 +1,5 @@
 <script>
-	import { lobbyId } from "../lib/stores";
+	import { lobbyId, name } from "$lib/stores";
 	import { goto } from "$app/navigation";
 	import { joinGame, listenToGame } from "../../game";
 	import { onMount } from "svelte";
@@ -13,7 +13,8 @@
 			return;
 		}
 		lobbyId.set(roomCode);
-		const opponent = await joinGame(roomCode, playerName);
+		name.set(playerName);
+		await joinGame(roomCode, playerName);
 		goto("/lobby");
 	}
 </script>

@@ -46,7 +46,7 @@ export function listenToLobby(gameId) {
 
 export async function joinGame(gameId, playerName) {
     if (!playerName) {
-        console.error("Player name or avatar is missing.");
+        console.error("Player name is missing.");
         return false;
     }
 

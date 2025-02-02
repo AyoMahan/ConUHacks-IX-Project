@@ -1,6 +1,7 @@
 <script>
     import { onMount } from "svelte";
-    import { lobbyId } from "../lib/stores";
+    import { get } from "svelte/store";
+    import { lobbyId, name } from "$lib/stores";
     import {
         createGame,
         joinGame,
@@ -11,17 +12,13 @@
         updatePlayerInfo,
     } from "../../game";
     import { goto } from "$app/navigation";
-    let playerName = "Player 1";
-    let oldDbName = "Player 1";
-    let oldName = "Player 1";
+    let playerName = get(name) ?? "Player 1";
+    let oldDbName = playerName;
+    let oldName = playerName;
     let oldAvatar = "🧑‍🚀";
     let playerAvatar = "🧑‍🚀";
     let players = [];
-    let roomCode;
-    lobbyId.subscribe((value) => {
-        roomCode = value;
-    });
-    // Get the room ID from the URL
+    let roomCode = get(lobbyId);
     const avatars = [
         "🧑‍🚀",
         "🧑‍🎤",

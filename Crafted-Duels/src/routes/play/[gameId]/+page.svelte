@@ -13,6 +13,7 @@
   let box1 = "";
   let box2 = "";
   let box3 = "";
+  let submitted = false;
 
   onMount(() => {
     resetGameFlag(gameId);
@@ -25,7 +26,7 @@
     weapons.set(selectedWeapons);
     submitWeapon(gameId, playerId, selectedWeapons);
     console.log("Submitting weapons:", selectedWeapons);
-    goto("/result");
+    submitted = true;
   }
 </script>
 
@@ -37,7 +38,9 @@
     <input class="box" bind:value={box2} placeholder="Enter Weapon 2" />
     <input class="box" bind:value={box3} placeholder="Enter Weapon 3" />
   </div>
-  <button class="bottom-box" on:click={handleClick}>Submit</button>
+  {#if submitted}
+    <button class="bottom-box" on:click={handleClick}>Submit</button>
+  {/if}
 </div>
 
 <style>

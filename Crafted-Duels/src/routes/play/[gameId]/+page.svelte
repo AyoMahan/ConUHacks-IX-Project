@@ -8,7 +8,7 @@
 
   export let data;
   const gameId = data.gameId;
-  let playerId = get("name");
+  let playerId = get(name);
   let box1 = "";
   let box2 = "";
   let box3 = "";

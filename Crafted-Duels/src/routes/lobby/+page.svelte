@@ -12,7 +12,7 @@
         listenToLobby,
         lobbyPlayers,
         updatePlayerInfo,
-        startGame
+        startGame,
     } from "../../game";
     import { goto } from "$app/navigation";
     let showHelpPopup = false;
@@ -112,7 +112,6 @@
             players = data;
         });
     });
-
 </script>
 
 <div class="lobby">

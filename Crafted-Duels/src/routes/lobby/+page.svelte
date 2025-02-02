@@ -96,6 +96,7 @@
     onMount(() => {
         // Listen for real-time player updates
         listenToLobby(roomCode);
+        listenToGame(roomCode);
         lobbyPlayers.subscribe((data) => {
             players = data;
         });

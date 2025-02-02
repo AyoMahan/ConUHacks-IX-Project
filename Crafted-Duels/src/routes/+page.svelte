@@ -103,6 +103,7 @@
   .title {
     text-wrap: nowrap;
     font-size: 72px;
+    color: antiquewhite;
   }
 
   .bottom-menu {
@@ -124,8 +125,8 @@
   .create-btn,
   .join-btn {
     font-size: 34px;
-    outline: 2px black solid;
-    border-radius: 20px;
+    outline: 4px #FFDEAD solid;
+    border-radius: 10px;
     height: 2em;
     width: 10em;
     padding: 15px;
@@ -134,10 +135,12 @@
     justify-content: center;
     align-items: center;
     user-select: none;
+    background-color: rgba(214, 122, 9, 0.8);
+    color: #FFDEAD;
   }
 
   .create-btn:hover, .join-btn:hover{
-    background-color: lightcoral;
+    background-color: #8a4f07;
     cursor: pointer;
   }
 

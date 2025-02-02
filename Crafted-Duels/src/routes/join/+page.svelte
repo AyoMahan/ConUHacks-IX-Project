@@ -12,6 +12,7 @@
 			alert("Please enter both username and room code.");
 			return;
 		}
+		roomCode = roomCode.toUpperCase();
 		lobbyId.set(roomCode);
 		name.set(playerName);
 		await joinGame(roomCode, playerName);
@@ -23,7 +24,7 @@
 	<h1 class="glow">🔗 Join a Game</h1>
 
 	<div class="input-container">
-		<label>Your Username:</label>
+		<p>Your Username:</p>
 		<input
 			type="text"
 			bind:value={playerName}
@@ -33,12 +34,12 @@
 	</div>
 
 	<div class="input-container">
-		<label>Room Code:</label>
+		<p>Room Code:</p>
 		<input
 			type="text"
 			bind:value={roomCode}
 			placeholder="Enter Room Code"
-			class="glow-input"
+			class="glow-input uppercase"
 		/>
 	</div>
 
@@ -144,5 +145,13 @@
 
 	.neon-button {
 		box-shadow: 0 0 15px rgba(255, 222, 173, 0.8);
+	}
+
+	.uppercase {
+		text-transform: uppercase;
+	}
+
+	.uppercase::placeholder {
+		text-transform: none;
 	}
 </style>

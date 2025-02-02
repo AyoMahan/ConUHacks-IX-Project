@@ -13,6 +13,7 @@ export async function createGame() {
     const gameRef = doc(db, "games", gameId);
     await setDoc(gameRef, {
         isGameStarted: false,
+        isResults: false,
         winner: null,
         players: [
             {
@@ -34,9 +35,14 @@ export function listenToGame(gameId) {
             gameState.set(gameData);
 
             // Check if the game has started
-            if (gameData.gameStarted) {
+            if (gameData.isGameStarted) {
                 console.log("Game started, redirecting players to /play...");
                 goto(`/play/${gameId}`);
+            }
+
+            if (gameData.isResults) {
+                console.log("Results, redirecting players to /result...");
+                goto(`/result`);
             }
         }
     });
@@ -87,6 +93,12 @@ export async function submitWeapon(gameId, playerName, newWeapons) {
                 players[playerIndex].weapons = [];
             }
             players[playerIndex].weapons = newWeapons;
+            if (players[1 - playerIndex].weapons.length > 0) {
+                await updateDoc(gameRef, {
+                    isResults: false,
+                });
+            
+            }
         } else {
             players.push({ name: playerName, avatar: "👤", weapons: newWeapons });
         }
@@ -129,7 +141,7 @@ export async function resetGameFlag(gameId) {
     const gameRef = doc(db, "games", gameId);
 
     await updateDoc(gameRef, {
-        gameStarted: false,
+        isGameStarted: false,
     });
 
     console.log("Game has started!");
@@ -139,7 +151,7 @@ export async function startGame(gameId) {
     const gameRef = doc(db, "games", gameId);
 
     await updateDoc(gameRef, {
-        gameStarted: true,
+        isGameStarted: true,
     });
 
     console.log("Game has started!");

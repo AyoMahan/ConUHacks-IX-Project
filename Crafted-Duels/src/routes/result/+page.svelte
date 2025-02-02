@@ -11,8 +11,11 @@
 
   // Function to fetch the image and description from OpenAI API
   async function generateWeaponAndImage() {
+    console.log('hi');
     let player1Items = getWeapons1();
+    console.log(player1Items);
     let player2Items = getWeapons2();
+    console.log(player2Items);
     const prompt = `
       Player 1 has the following items: ${player1Items.join(', ')}.
       Player 2 has the following items: ${player2Items.join(', ')}.
@@ -42,6 +45,7 @@
       if (result && result.data && result.data[0]) {
         const apiImageUrl = result.data[0].url;         // Image URL
         const apiDescription = result.data[0].revised_prompt;  // Image description
+        console.log('Image URL:', apiImageUrl);
 
         // Update your image and description stores
         imageUrl.set(apiImageUrl);  

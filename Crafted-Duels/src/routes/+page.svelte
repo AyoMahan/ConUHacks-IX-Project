@@ -1,5 +1,6 @@
 <script>
   import { goto } from "$app/navigation";
+  import { lobbyId } from "./lib/stores";
   import Rules from "$lib/components/Rules.svelte";
   import {
     createGame,
@@ -22,7 +23,9 @@
   async function createNewGame() {
     gameId = await createGame(challenge);
     inGame = true;
+    lobbyId.set(gameId);
     listenToGame(gameId);
+    navigateTo(`/lobby`);
   }
 
   async function joinExistingGame() {
@@ -39,7 +42,7 @@
   }
 </script>
 
-<div class="main-menu-outer-container">
+<div class="main-menu-outer-container fade-in">
   <div class="main-menu-inner-container">
     <div class="top-menu">
       <h1 class="title">Crafted Duels</h1>
@@ -50,9 +53,9 @@
         class="create-btn"
         role="button"
         tabindex="0"
-        on:click={() => navigateTo("/create")}
+        on:click={createNewGame}
         on:keydown={(e) =>
-          (e.key === "Enter" || e.key === " ") && navigateTo("/create")}
+          (e.key === "Enter" || e.key === " ") && navigateTo("/lobby")}
       >
         Create
       </div>
@@ -83,7 +86,20 @@
     min-height: 90vh;
     width: 100%;
   }
+  .fade-in {
+    animation: fadeIn 1s ease-in-out;
+  }
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
   .main-menu-inner-container {
     position: relative;
     display: flex;
@@ -104,6 +120,8 @@
     text-wrap: nowrap;
     font-size: 72px;
     color: antiquewhite;
+    text-shadow: 0 0 10px rgba(255, 222, 173, 0.8);
+    animation: glowText 1.5s infinite alternate;
   }
 
   .bottom-menu {
@@ -122,10 +140,18 @@
     align-self: flex-start;
   }
 
+  @keyframes glowText {
+    from {
+      text-shadow: 0 0 10px #ffcc29;
+    }
+    to {
+      text-shadow: 0 0 20px #ffcc29;
+    }
+  }
   .create-btn,
   .join-btn {
     font-size: 34px;
-    outline: 4px #FFDEAD solid;
+    outline: 4px #ffdead solid;
     border-radius: 10px;
     height: 2em;
     width: 10em;
@@ -136,12 +162,17 @@
     align-items: center;
     user-select: none;
     background-color: rgba(214, 122, 9, 0.8);
-    color: #FFDEAD;
+    color: #ffdead;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 10px rgba(255, 222, 173, 0.6);
   }
 
-  .create-btn:hover, .join-btn:hover{
+  .create-btn:hover,
+  .join-btn:hover {
     background-color: #8a4f07;
     cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+    transform: translateY(-3px);
   }
 
   .logo-img {

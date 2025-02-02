@@ -157,7 +157,7 @@
 </div>
 
 <style>
-    body {
+    /* body {
         font-family: "Poppins", sans-serif;
         background: linear-gradient(135deg, #3e1e00, #8a4f07);
         color: #ffdead;
@@ -168,7 +168,7 @@
         height: 100vh;
         margin: 0;
         overflow: hidden;
-    }
+    } */
     /* Smooth Fade-In Animation */
     .fade-in {
         animation: fadeIn 1s ease-in-out;

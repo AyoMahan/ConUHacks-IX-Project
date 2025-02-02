@@ -6,6 +6,7 @@
 
   export let data;
   const gameId = data.gameId;
+  let playerId = "";
   let box1 = "";
   let box2 = "";
   let box3 = "";

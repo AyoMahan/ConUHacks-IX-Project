@@ -125,6 +125,16 @@ export async function updatePlayerInfo(gameId, oldName, newName, newAvatar) {
     }
 }
 
+export async function resetGameFlag(gameId) {
+    const gameRef = doc(db, "games", gameId);
+
+    await updateDoc(gameRef, {
+        gameStarted: false,
+    });
+
+    console.log("Game has started!");
+}
+
 export async function startGame(gameId) {
     const gameRef = doc(db, "games", gameId);
 

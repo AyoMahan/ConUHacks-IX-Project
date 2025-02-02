@@ -1,6 +1,6 @@
 <script>
   import Timer from "$lib/components/Timer.svelte";
-  import { submitWeapon } from "../../../game";
+  import { submitWeapon, resetGameFlag } from "../../../game";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
@@ -14,18 +14,18 @@
   let box2 = "";
   let box3 = "";
 
-  onMount(() => {});
+  onMount(() => {
+    resetGameFlag(gameId);
+  });
 
   function handleClick() {
     console.log(gameId);
     console.log("Weapons Selected:", box1, box2, box3);
     const selectedWeapons = [box1, box2, box3];
     weapons.set(selectedWeapons);
-    selectedWeapons.forEach((weapon) => {
-      submitWeapon(gameId, playerId, selectedWeapons);
-      console.log("Submitting weapons:", selectedWeapons);
-      goto("/result");
-    });
+    submitWeapon(gameId, playerId, selectedWeapons);
+    console.log("Submitting weapons:", selectedWeapons);
+    goto("/result");
   }
 </script>
 

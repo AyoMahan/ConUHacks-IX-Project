@@ -26,7 +26,7 @@
 
     try {
       // Make the request to your backend (or API route) for OpenAI
-      const response = await fetch('/generate-weapon', {
+      const response = await fetch(`https://api.openai.com/v1/images/generations?Content-Type=application/json`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

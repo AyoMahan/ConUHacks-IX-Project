@@ -4,7 +4,8 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
-    import { name } from "$lib/stores";
+  import { name } from "$lib/stores";
+  import { goto } from "$app/navigation";
 
   export let data;
   const gameId = data.gameId;
@@ -13,21 +14,17 @@
   let box2 = "";
   let box3 = "";
 
-  onMount(() => {
-  });
+  onMount(() => {});
 
   function handleClick() {
     console.log(gameId);
     console.log("Weapons Selected:", box1, box2, box3);
     const selectedWeapons = [box1, box2, box3];
-    alert(`Weapons Selected: ${box1}, ${box2}, ${box3}`);
     selectedWeapons.forEach((weapon) => {
-      // firestore.collection('selectedWeapons').add({ weapon: weapon });
-      submitWeapon(gameId, playerId, weaponsId);
-      console.log("Submitting weapon:", weapon);
+      submitWeapon(gameId, playerId, selectedWeapons);
+      console.log("Submitting weapons:", selectedWeapons);
       goto("/result");
     });
-    return selectedWeapons;
   }
 </script>
 

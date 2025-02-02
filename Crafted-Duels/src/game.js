@@ -74,8 +74,8 @@ export async function joinGame(gameId, playerName) {
     }
 }
 
-export async function submitWeapon(gameId, playerName, weapon) {
-    console.log(`Submitting weapon: ${weapon} for player: ${playerName}`);
+export async function submitWeapon(gameId, playerName, newWeapons) {
+    console.log(`Submitting weapons: ${newWeapons} for player: ${playerName}`);
     const gameRef = doc(db, "games", gameId);
     const gameSnap = await getDoc(gameRef);
 
@@ -86,9 +86,9 @@ export async function submitWeapon(gameId, playerName, weapon) {
             if (!players[playerIndex].weapons) {
                 players[playerIndex].weapons = [];
             }
-            players[playerIndex].weapons.push(weapon);
+            players[playerIndex].weapons = newWeapons;
         } else {
-            players.push({ name: playerName, avatar: "👤", weapons: [weapon] });
+            players.push({ name: playerName, avatar: "👤", weapons: newWeapons });
         }
         await updateDoc(gameRef, { players });
         console.log("Weapon submitted successfully!");

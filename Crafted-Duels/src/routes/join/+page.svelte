@@ -84,6 +84,11 @@
 		-ms-overflow-style: none; 
 	}
 
+	p{
+		color: antiquewhite;
+		font-weight: bold;
+	}
+
 	.lobby-container::-webkit-scrollbar {
 		display: none;
 	}

@@ -11,7 +11,10 @@
         updatePlayerInfo,
     } from "../../game";
     import { goto } from "$app/navigation";
-    let playerName = "";
+    let playerName = "Player 1";
+    let oldDbName = "Player 1";
+    let oldName = "Player 1";
+    let oldAvatar = "🧑‍🚀";
     let playerAvatar = "🧑‍🚀";
     let players = [];
     let roomCode;
@@ -50,23 +53,20 @@
         alert("Copied: " + text);
     }
 
-    async function updateInfo() {
-        if (!playerName || !newPlayerName) {
+    async function pushUpdateName() {
+        if (!playerName) {
             alert("Please enter your current and new name.");
             return;
         }
-
         const success = await updatePlayerInfo(
             roomCode,
+            oldDbName,
             playerName,
-            newPlayerName,
-            newPlayerAvatar,
+            playerAvatar,
         );
 
         if (success) {
-            playerName = newPlayerName;
-            playerAvatar = newPlayerAvatar;
-            newPlayerName = "";
+            oldDbName = playerName;
         } else {
             alert(
                 "Failed to update player info. Make sure you exist in the lobby.",
@@ -74,8 +74,23 @@
         }
     }
 
+    async function updateAvatar() {
+        const success = await updatePlayerInfo(
+            roomCode,
+            playerName,
+            playerName,
+            playerAvatar,
+        );
+    }
+
     function navigateTo(path) {
         goto(path);
+    }
+
+    function updateName(newName) {
+        let index = players.findIndex((p) => p.name == oldName);
+        players[index].name = newName;
+        oldName = newName;
     }
 
     onMount(() => {
@@ -94,13 +109,15 @@
         Your name: <input
             type="text"
             bind:value={playerName}
+            on:input={() => updateName(playerName)}
+            on:change={pushUpdateName}
             placeholder="Enter your name"
         />
     </h2>
 
     <h2 class="fade-in">
         Choose your avatar:
-        <select bind:value={playerAvatar} class="glow-hover">
+        <select bind:value={playerAvatar} on:change={updateAvatar} class="glow-hover">
             {#each avatars as avatar}
                 <option value={avatar}>{avatar}</option>
             {/each}
@@ -133,7 +150,12 @@
             class="button back-btn neon-button"
             on:click={() => navigateTo("/")}>⬅️ Back</button
         >
-        <button class="button start-btn neon-button">🚀 Start</button>
+        <button
+            class="button start-btn neon-button"
+            on:click={() =>
+                navigateTo(`/play/${roomCode}?playerId=${playerName}`)}
+            >🚀 Start</button
+        >
     </div>
 </div>
 

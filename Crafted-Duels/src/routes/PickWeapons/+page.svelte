@@ -10,10 +10,10 @@
       const selectedWeapons = [box1, box2, box3];
       alert(`Weapons Selected: ${box1}, ${box2}, ${box3}`);
       selectedWeapons.forEach((weapon) => {
-      // Example submission to Firestore (pseudo code)
       // firestore.collection('selectedWeapons').add({ weapon: weapon });
       submitWeapon(gameId,playerId,weaponsId)
-      console.log("Submitting weapon:", weapon); // This is just an example
+      console.log("Submitting weapon:", weapon); 
+      goto("/result");
   });
     return selectedWeapons
   }

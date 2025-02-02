@@ -134,3 +134,27 @@ export async function startGame(gameId) {
 
     console.log("Game has started!");
 }
+
+export async function getWeapons1(gameId) {
+    const gameRef = doc(db, "games", gameId);
+    const gameSnap = await getDoc(gameRef);
+
+    if (gameSnap.exists()) {
+        return gameSnap.data().players[0].flat();
+    } else {
+        console.error("Game does not exist!");
+        return [];
+    }
+}
+
+export async function getWeapons2(gameId) {
+    const gameRef = doc(db, "games", gameId);
+    const gameSnap = await getDoc(gameRef);
+
+    if (gameSnap.exists()) {
+        return gameSnap.data().players[1].flat();
+    } else {
+        console.error("Game does not exist!");
+        return [];
+    }
+}

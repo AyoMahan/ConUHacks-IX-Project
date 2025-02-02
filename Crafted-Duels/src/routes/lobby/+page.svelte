@@ -1,6 +1,7 @@
 <script>
     import { onMount } from "svelte";
-    import { lobbyId } from "../lib/stores";
+    import { get } from "svelte/store";
+    import { lobbyId, name } from "$lib/stores";
     import {
         createGame,
         joinGame,
@@ -11,17 +12,13 @@
         updatePlayerInfo,
     } from "../../game";
     import { goto } from "$app/navigation";
-    let playerName = "Player 1";
-    let oldDbName = "Player 1";
-    let oldName = "Player 1";
+    let playerName = get(name) ?? "Player 1";
+    let oldDbName = playerName;
+    let oldName = playerName;
     let oldAvatar = "🧑‍🚀";
     let playerAvatar = "🧑‍🚀";
     let players = [];
-    let roomCode;
-    lobbyId.subscribe((value) => {
-        roomCode = value;
-    });
-    // Get the room ID from the URL
+    let roomCode = get(lobbyId);
     const avatars = [
         "🧑‍🚀",
         "🧑‍🎤",
@@ -108,6 +105,7 @@
     <h2 class="fade-in">
         Your name: <input
             type="text"
+            class="name-input"
             bind:value={playerName}
             on:input={() => updateName(playerName)}
             on:change={pushUpdateName}
@@ -160,10 +158,10 @@
 </div>
 
 <style>
-    body {
+    /* body {
         font-family: "Poppins", sans-serif;
         background: linear-gradient(135deg, #3e1e00, #8a4f07);
-        color: #ffdead;
+        color: antiquewhite;
         min-height: 100vh;
         display: flex;
         justify-content: center;
@@ -171,7 +169,7 @@
         height: 100vh;
         margin: 0;
         overflow: hidden;
-    }
+    } */
     /* Smooth Fade-In Animation */
     .fade-in {
         animation: fadeIn 1s ease-in-out;
@@ -188,10 +186,18 @@
         }
     }
 
+    h1, h2{
+        font-weight: bold;
+    }
+
+    .name-input::placeholder{
+        color: darkgrey;
+    }
+
     .lobby {
-        width: 90%;
-        max-width: 450px;
-        max-height: 90vh;
+        width: 100%;
+        max-width: 30em;
+        max-height: 80vh;
         height: auto;
         background: rgba(58, 29, 3, 0.9);
         padding: 25px;
@@ -200,10 +206,17 @@
         text-align: center;
         position: relative;
         margin: auto;
-        border: 4px solid #ffdead;
-        overflow: auto;
+        text-wrap: nowrap;
+        color: antiquewhite;
         flex-grow: 1;
-    }
+        overflow-y: scroll;
+		scrollbar-width: none;
+		-ms-overflow-style: none; 
+	}
+
+	.lobby::-webkit-scrollbar {
+		display: none;
+	}
 
     input,
     select {
@@ -216,7 +229,7 @@
         border-radius: 5px;
         border: 2px solid #ffdead;
         background-color: rgba(214, 122, 9, 0.8);
-        color: #ffdead;
+        color: antiquewhite;
         text-align: center;
     }
 
@@ -229,7 +242,7 @@
     /* Button Styling */
     .button {
         font-size: 20px;
-        outline: 4px #ffdead solid;
+        border: 4px #ffdead solid;
         border-radius: 10px;
         height: 2.5em;
         width: 10em;
@@ -241,7 +254,7 @@
         align-items: center;
         user-select: none;
         background-color: rgba(214, 122, 9, 0.8);
-        color: #ffdead;
+        color: antiquewhite;    
         transition: background-color 0.3s ease-in-out;
     }
 
@@ -269,19 +282,19 @@
     /* Different Button Colors */
     .copy-btn {
         background: #ff9f1a;
-        color: black;
+        color: antiquewhite;
     }
     .start-btn {
         background: #27ae60;
-        color: white;
+        color: antiquewhite;
     }
     .back-btn {
         background: #c0392b;
-        color: white;
+        color: antiquewhite;
     }
     .info-btn {
         background: #3498db;
-        color: white;
+        color: antiquewhite;
     }
 
     /* VS Section */
@@ -289,7 +302,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 30px 0;
     }
 
     .vs-text {
@@ -369,14 +381,16 @@
 
     /* Neon Glow on Room Code */
     .room-code {
-        font-size: 20px;
+        width: 20%;
+        min-height: 5vh;
+        font-size: 32x;
         font-weight: bold;
         background: rgba(214, 122, 9, 0.8);
         padding: 5px 15px;
         border-radius: 10px;
         display: inline-block;
         border: 2px solid #ffdead;
-        color: #ffdead;
+        color: antiquewhite;
         box-shadow: 0 0 10px rgba(255, 222, 173, 0.8);
         text-transform: uppercase;
         letter-spacing: 2px;
@@ -391,6 +405,6 @@
     }
     .button-group {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-evenly;
     }
 </style>

@@ -1,5 +1,5 @@
 <script>
-	import { lobbyId } from "../lib/stores";
+	import { lobbyId, name } from "$lib/stores";
 	import { goto } from "$app/navigation";
 	import { joinGame, listenToGame } from "../../game";
 	import { onMount } from "svelte";
@@ -13,7 +13,8 @@
 			return;
 		}
 		lobbyId.set(roomCode);
-		const opponent = await joinGame(roomCode, playerName);
+		name.set(playerName);
+		await joinGame(roomCode, playerName);
 		goto("/lobby");
 	}
 </script>
@@ -41,7 +42,7 @@
 		/>
 	</div>
 
-	<button on:click={joinRoom} class="button neon-button">Join Room 🚀</button>
+	<button on:click={joinRoom} class="button neon-button">🚀 Join Room</button>
 </div>
 
 <style>
@@ -63,18 +64,27 @@
 
 	.lobby-container {
 		width: 30%;
-		max-width: 450px;
+		max-height: 70vh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
-		padding: 2rem;
+		padding-bottom: 2em;
+		padding-left: 2em;
+		padding-right: 2em;
 		max-width: 500px;
 		margin: auto;
+		height: auto;
 		background: rgba(0, 0, 0, 0.6);
 		border-radius: 12px;
 		box-shadow: 0 0 20px rgba(255, 222, 173, 0.4);
-		padding: 2rem;
+		overflow-y: scroll;
+		scrollbar-width: none;
+		-ms-overflow-style: none; 
+	}
+
+	.lobby-container::-webkit-scrollbar {
+		display: none;
 	}
 
 	.glow {
@@ -108,11 +118,16 @@
 		box-shadow: 0 0 10px rgba(255, 222, 173, 0.5);
 	}
 
+	.glow-input::placeholder{
+        color: darkgrey;
+    }
+
 	.button {
+		margin-top: 1em;
 		padding: 1rem 2rem;
 		font-size: 1.2rem;
 		background: linear-gradient(90deg, #d67a09, #8a4f07);
-		border: none;
+		border: 4px #ffdead solid;
 		border-radius: 8px;
 		cursor: pointer;
 		color: white;

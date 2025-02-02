@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { get } from "svelte/store";
-  import { weapons } from "$lib/stores";
+  import { lobbyId, weapons } from "$lib/stores";
   import { getWeapons1, getWeapons2 } from '../../game';
 
   // Writable stores to hold the image URL and description
@@ -12,9 +12,9 @@
   // Function to fetch the image and description from OpenAI API
   async function generateWeaponAndImage() {
     console.log('hi');
-    let player1Items = getWeapons1();
+    let player1Items = getWeapons1(get(lobbyId));
     console.log(player1Items);
-    let player2Items = getWeapons2();
+    let player2Items = getWeapons2(get(lobbyId));
     console.log(player2Items);
     const prompt = `
       Player 1 has the following items: ${player1Items.join(', ')}.

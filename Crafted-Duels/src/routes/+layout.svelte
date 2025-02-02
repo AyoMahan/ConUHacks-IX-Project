@@ -1,15 +1,26 @@
 <script>
-	import '../app.css';
+	import "../app.css";
+	import Parallax from "$lib/components/Parallax.svelte";
 
 	let { children } = $props();
+	let bgURLs = [
+		"images/bg-layer0.png",
+		"images/bg-layer1.png",
+		"images/bg-layer2.png",
+		"images/bg-layer3.png",
+		"images/bg-layer4.png",
+	];
+	let bgSpeeds = [0.01, 0.03, 0.05, 0.08, 0.2];
 </script>
 
-<div class="app">
+<div class="background">
+	<Parallax imageURLs={bgURLs} speeds={bgSpeeds} />
+</div>
 
+<div class="app">
 	<main>
 		{@render children()}
 	</main>
-
 </div>
 
 <style>

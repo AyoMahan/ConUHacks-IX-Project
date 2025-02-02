@@ -77,9 +77,6 @@
     {/if}
   </div>
 
-  <div class="image-frame">
-    <img src="/images/example-result.png" alt="example" />
-  </div>
   <div class="text-frame">
     {#if $description}
       <p>{$description}</p>

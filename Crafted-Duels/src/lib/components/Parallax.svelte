@@ -6,9 +6,11 @@
     export let speeds = [];
 </script>
 
-{#each imageURLs as imageURL, index}
-    <ScrollingImg {imageURL} speed={speeds[index]} />
-{/each}
+<div class="bg">
+    {#each imageURLs as imageURL, index}
+        <ScrollingImg {imageURL} speed={speeds[index]} />
+    {/each}
+</div>
 
 <style>
 </style>

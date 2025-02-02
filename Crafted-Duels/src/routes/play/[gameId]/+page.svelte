@@ -4,7 +4,7 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
-  import { name } from "$lib/stores";
+  import { name, weapons } from "$lib/stores";
   import { goto } from "$app/navigation";
 
   export let data;
@@ -20,6 +20,7 @@
     console.log(gameId);
     console.log("Weapons Selected:", box1, box2, box3);
     const selectedWeapons = [box1, box2, box3];
+    weapons.set(selectedWeapons);
     selectedWeapons.forEach((weapon) => {
       submitWeapon(gameId, playerId, selectedWeapons);
       console.log("Submitting weapons:", selectedWeapons);

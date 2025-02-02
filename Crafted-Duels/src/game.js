@@ -15,8 +15,8 @@ export async function createGame(challenge) {
         winner: null,
         players: [
             {
-                name: "player 1",
-                avatar: "👤",
+                name: "Player 1",
+                avatar: "🧑‍🚀",
                 weapons: [],
             },
         ],

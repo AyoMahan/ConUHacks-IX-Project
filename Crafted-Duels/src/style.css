@@ -1,0 +1,119 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background: #1e1e2f;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Game Box */
+.game-box {
+    width: 400px;
+    padding: 20px;
+    background: #2a2a3d;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Buttons */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    background: #4f46e5;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #6366f1;
+}
+
+/* Green Button */
+.btn-green {
+    background: #22c55e;
+}
+
+.btn-green:hover {
+    background: #16a34a;
+}
+
+/* Input Fields */
+.input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    color: black;
+}
+
+/* Game Room */
+.game-room {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Challenge */
+.challenge {
+    margin-top: 20px;
+}
+
+.box {
+    background: #444;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Weapons List */
+.weapons ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.weapons li {
+    background: #444;
+    padding: 8px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+/* Winner */
+.winner {
+    margin-top: 20px;
+    color: #22c55e;
+    font-weight: bold;
+}
+
+/* Info Text */
+.info {
+    color: #aaa;
+    font-size: 14px;
+}
+
+/* Copy Button */
+.copy-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}

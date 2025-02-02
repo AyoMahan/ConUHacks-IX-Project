@@ -1,20 +1,36 @@
 <script>
    import Timer from '$lib/components/Timer.svelte';
    import { submitWeapon } from '../../game';
+   import { goto } from "$app/navigation";
+   import { gameState, lobbyPlayers, playerId } from "./game"; // Importing the stores
+
     let box1 = "";
     let box2 = "";
     let box3 = "";
   
-    function handleClick() {
+    function handleClick(gameId, playername,weaponsId) {
+      // Subscribe to the game state and extract gameId
+    $gameState && (gameId = $gameState.gameId);
+    let playerName;
+    if ($lobbyPlayers.length > 0) {
+        playerName = $lobbyPlayers[0].name;
+    }
+
+    if (!gameId || !playerName) {
+        console.error("Game ID or Player Name is missing!");
+        return;
+    }
       console.log("Weapons Selected:", box1, box2, box3);
       const selectedWeapons = [box1, box2, box3];
-      alert(`Weapons Selected: ${box1}, ${box2}, ${box3}`);
+      alert(`Weapons Selected: ${box1}, ${box2}, ${box3}`);//to delete after
+      
       selectedWeapons.forEach((weapon) => {
-      // firestore.collection('selectedWeapons').add({ weapon: weapon });
-      submitWeapon(gameId,playerId,weaponsId)
-      console.log("Submitting weapon:", weapon); 
-      goto("/result");
-  });
+        if (weapon) {
+            submitWeapon(gameId, playerName, weapon);
+            console.log(`Submitting weapon: ${weapon} for ${playerName}`);
+        }
+    });
+    goto("/result");
     return selectedWeapons
   }
     

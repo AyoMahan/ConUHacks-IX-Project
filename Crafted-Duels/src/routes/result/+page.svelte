@@ -34,9 +34,6 @@
             "Content-Type": "application/json",
             Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
           },
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: JSON.stringify({
             model: "dall-e-3",
             prompt: prompt,

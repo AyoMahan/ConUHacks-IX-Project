@@ -1,17 +1,13 @@
 <script>
   import { goto } from "$app/navigation";
-  import { lobbyId } from "./lib/stores";
+  import { lobbyId } from "$lib/stores";
   import Rules from "$lib/components/Rules.svelte";
   import PopupMessage from "$lib/components/PopupMessage.svelte";
   import {
     createGame,
-    joinGame,
     listenToGame,
-    gameState,
-    submitWeapon,
   } from "../game";
   let challenge = "Survive an alien invasion";
-  let weapon = "";
   let playerId = "player-" + Math.floor(Math.random() * 1000); // Random player ID
   let gameId = "";
   let joiningGameId = "";
@@ -24,7 +20,6 @@
 
   async function createNewGame() {
     gameId = await createGame(challenge);
-    inGame = true;
     lobbyId.set(gameId);
     listenToGame(gameId);
     navigateTo(`/lobby`);

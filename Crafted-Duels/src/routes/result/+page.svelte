@@ -5,12 +5,6 @@
   import { lobbyId, weapons } from "$lib/stores";
   import { getWeapons1, getWeapons2 } from "../../game";
 
-  import OpenAI from "openai";
-
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-
   // Writable stores to hold the image URL and description
   let imageUrl = writable("");
   let description = writable("");
@@ -36,6 +30,10 @@
         `https://api.openai.com/v1/images/generations?Content-Type=application/json`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+        },
           headers: {
             "Content-Type": "application/json",
           },

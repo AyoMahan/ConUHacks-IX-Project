@@ -162,7 +162,14 @@ export async function getWeapons1(gameId) {
     const gameSnap = await getDoc(gameRef);
 
     if (gameSnap.exists()) {
-        return gameSnap.data().players[0].flat();
+        // Get weapons from the first player
+        const players = gameSnap.data().players;
+        if (players && players[0]) {
+            return players[0].weapons || []; // Access the 'weapons' property directly
+        } else {
+            console.error("Player data is not available.");
+            return [];
+        }
     } else {
         console.error("Game does not exist!");
         return [];
@@ -174,7 +181,14 @@ export async function getWeapons2(gameId) {
     const gameSnap = await getDoc(gameRef);
 
     if (gameSnap.exists()) {
-        return gameSnap.data().players[1].flat();
+        // Get weapons from the first player
+        const players = gameSnap.data().players;
+        if (players && players[1]) {
+            return players[1].weapons || []; // Access the 'weapons' property directly
+        } else {
+            console.error("Player data is not available.");
+            return [];
+        }
     } else {
         console.error("Game does not exist!");
         return [];

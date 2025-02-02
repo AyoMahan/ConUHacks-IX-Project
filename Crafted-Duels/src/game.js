@@ -95,7 +95,7 @@ export async function submitWeapon(gameId, playerName, newWeapons) {
             players[playerIndex].weapons = newWeapons;
             if (players[1 - playerIndex].weapons.length > 0) {
                 await updateDoc(gameRef, {
-                    isResults: false,
+                    isResults: true,
                 });
             
             }

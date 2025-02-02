@@ -1,14 +1,23 @@
 <script>
    import Timer from '$lib/components/Timer.svelte';
-   
+   import { submitWeapon } from '../../game';
     let box1 = "";
     let box2 = "";
     let box3 = "";
   
     function handleClick() {
       console.log("Weapons Selected:", box1, box2, box3);
+      const selectedWeapons = [box1, box2, box3];
       alert(`Weapons Selected: ${box1}, ${box2}, ${box3}`);
-    }
+      selectedWeapons.forEach((weapon) => {
+      // Example submission to Firestore (pseudo code)
+      // firestore.collection('selectedWeapons').add({ weapon: weapon });
+      submitWeapon(gameId,playerId,weaponsId)
+      console.log("Submitting weapon:", weapon); // This is just an example
+  });
+    return selectedWeapons
+  }
+    
   </script>
   
   <div class="container">

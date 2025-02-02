@@ -12,6 +12,7 @@
         listenToLobby,
         lobbyPlayers,
         updatePlayerInfo,
+        startGame
     } from "../../game";
     import { goto } from "$app/navigation";
     let showHelpPopup = false;
@@ -22,6 +23,7 @@
     let playerAvatar = "🧑‍🚀";
     let players = [];
     let roomCode = get(lobbyId);
+    name.set(playerName);
     const avatars = [
         "🧑‍🚀",
         "🧑‍🎤",
@@ -91,6 +93,7 @@
         let index = players.findIndex((p) => p.name == oldName);
         players[index].name = newName;
         oldName = newName;
+        name.set(newName);
     }
 
     function openHelpPopup() {
@@ -108,6 +111,7 @@
             players = data;
         });
     });
+
 </script>
 
 <div class="lobby">
@@ -167,9 +171,7 @@
         >
         <button
             class="button start-btn neon-button"
-            on:click={() =>
-                navigateTo(`/play/${roomCode}?playerId=${playerName}`)}
-            >🚀 Start</button
+            on:click={() => startGame(roomCode)}>🚀 Start</button
         >
     </div>
 </div>

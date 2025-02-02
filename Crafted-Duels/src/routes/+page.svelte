@@ -7,7 +7,6 @@
     createGame,
     listenToGame,
   } from "../game";
-  let challenge = "Survive an alien invasion";
   let playerId = "player-" + Math.floor(Math.random() * 1000); // Random player ID
   let gameId = "";
   let joiningGameId = "";
@@ -19,7 +18,7 @@
   }
 
   async function createNewGame() {
-    gameId = await createGame(challenge);
+    gameId = await createGame();
     lobbyId.set(gameId);
     listenToGame(gameId);
     navigateTo(`/lobby`);

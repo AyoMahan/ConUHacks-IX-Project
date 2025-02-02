@@ -1,6 +1,8 @@
 <script>
     import { onMount } from "svelte";
     import { get } from "svelte/store";
+    import Rules from "$lib/components/Rules.svelte";
+    import PopupMessage from "$lib/components/PopupMessage.svelte";
     import { lobbyId, name } from "$lib/stores";
     import {
         createGame,
@@ -12,6 +14,7 @@
         updatePlayerInfo,
     } from "../../game";
     import { goto } from "$app/navigation";
+    let showHelpPopup = false;
     let playerName = get(name) ?? "Player 1";
     let oldDbName = playerName;
     let oldName = playerName;
@@ -90,6 +93,14 @@
         oldName = newName;
     }
 
+    function openHelpPopup() {
+        showHelpPopup = true;
+    }
+
+    function closeHelpPopup() {
+        showHelpPopup = false;
+    }
+
     onMount(() => {
         // Listen for real-time player updates
         listenToLobby(roomCode);
@@ -115,7 +126,11 @@
 
     <h2 class="fade-in">
         Choose your avatar:
-        <select bind:value={playerAvatar} on:change={updateAvatar} class="glow-hover">
+        <select
+            bind:value={playerAvatar}
+            on:change={updateAvatar}
+            class="glow-hover"
+        >
             {#each avatars as avatar}
                 <option value={avatar}>{avatar}</option>
             {/each}
@@ -143,7 +158,9 @@
     </div>
 
     <div class="button-group fade-in">
-        <button class="button info-btn neon-button">❔ Help</button>
+        <div class="footer">
+            <Rules on:click={openHelpPopup} />
+        </div>
         <button
             class="button back-btn neon-button"
             on:click={() => navigateTo("/")}>⬅️ Back</button
@@ -157,19 +174,21 @@
     </div>
 </div>
 
+{#if showHelpPopup}
+    <PopupMessage
+        message="⚔️ Welcome to the Ultimate Duel! ⚔️
+You have 30 seconds to unleash your creativity!
+Craft your weapon by writing 3 words—these will be your items of power.
+
+Once both players are ready, you'll enter the arena where the AI Judge will decide your fate.
+Think fast. Be bold. Conquer.
+
+Good luck, warrior! 🗡️"
+        on:close={closeHelpPopup}
+    />
+{/if}
+
 <style>
-    /* body {
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #3e1e00, #8a4f07);
-        color: antiquewhite;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        overflow: hidden;
-    } */
     /* Smooth Fade-In Animation */
     .fade-in {
         animation: fadeIn 1s ease-in-out;
@@ -186,11 +205,12 @@
         }
     }
 
-    h1, h2{
+    h1,
+    h2 {
         font-weight: bold;
     }
 
-    .name-input::placeholder{
+    .name-input::placeholder {
         color: darkgrey;
     }
 
@@ -210,13 +230,13 @@
         color: antiquewhite;
         flex-grow: 1;
         overflow-y: scroll;
-		scrollbar-width: none;
-		-ms-overflow-style: none; 
-	}
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
 
-	.lobby::-webkit-scrollbar {
-		display: none;
-	}
+    .lobby::-webkit-scrollbar {
+        display: none;
+    }
 
     input,
     select {
@@ -254,7 +274,7 @@
         align-items: center;
         user-select: none;
         background-color: rgba(214, 122, 9, 0.8);
-        color: antiquewhite;    
+        color: antiquewhite;
         transition: background-color 0.3s ease-in-out;
     }
 

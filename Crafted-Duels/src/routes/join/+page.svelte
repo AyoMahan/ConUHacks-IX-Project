@@ -131,6 +131,7 @@
 		border-radius: 8px;
 		cursor: pointer;
 		color: white;
+		text-wrap: nowrap;
 		font-weight: bold;
 		transition:
 			transform 0.2s ease,

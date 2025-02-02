@@ -82,11 +82,19 @@
 </div>
 
 {#if showHelpPopup}
-    <PopupMessage message="This is a helpful popup." on:close={closeHelpPopup} />
+    <PopupMessage message="⚔️ Welcome to the Ultimate Duel! ⚔️
+You have 30 seconds to unleash your creativity!
+Craft your weapon by writing 3 words—these will be your items of power.
+
+Once both players are ready, you'll enter the arena where the AI Judge will decide your fate.
+Think fast. Be bold. Conquer.
+
+Good luck, warrior! 🗡️" on:close={closeHelpPopup} />
 {/if}
 
 <style>
   .main-menu-outer-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;

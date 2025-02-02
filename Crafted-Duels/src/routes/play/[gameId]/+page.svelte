@@ -38,7 +38,7 @@
     <input class="box" bind:value={box2} placeholder="Enter Weapon 2" />
     <input class="box" bind:value={box3} placeholder="Enter Weapon 3" />
   </div>
-  {#if submitted}
+  {#if !submitted}
     <button class="bottom-box" on:click={handleClick}>Submit</button>
   {/if}
 </div>

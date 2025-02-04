@@ -1,7 +1,7 @@
 <script>
 	import { lobbyId, name } from "$lib/stores";
 	import { goto } from "$app/navigation";
-	import { joinGame, listenToGame } from "../../game";
+	import { joinGame } from "../../game";
 	import { onMount } from "svelte";
 
 	let playerName = "";
@@ -102,13 +102,6 @@
 		width: 100%;
 		text-align: left;
 		margin-bottom: 1rem;
-	}
-
-	label {
-		display: block;
-		font-size: 1.2rem;
-		color: white;
-		margin-bottom: 0.5rem;
 	}
 
 	.glow-input {

@@ -1,19 +1,22 @@
 import { db } from "./firebase";
-import { doc, setDoc, updateDoc, onSnapshot, getDoc, arrayUnion } from "firebase/firestore";
-import { writable } from "svelte/store";
+import { doc, setDoc, updateDoc, onSnapshot, getDoc, arrayUnion, runTransaction } from "firebase/firestore";
+import { writable, get } from "svelte/store";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { goto } from "$app/navigation";
 
 export const gameState = writable(null);
 export const lobbyPlayers = writable([]); // Store for real-time players
+export const imageUrl = writable("");
+export const description = writable("");
 
 export async function createGame() {
     const gameId = Math.random().toString(36).substr(2, 4).toUpperCase();
     const gameRef = doc(db, "games", gameId);
     await setDoc(gameRef, {
-        isGameStarted: false,
-        isResults: false,
+        gotoGameFlag: false,
+        gotoResultFlag: false,
+        generatingResults: false,
         winner: null,
         players: [
             {
@@ -22,38 +25,37 @@ export async function createGame() {
                 weapons: [],
             },
         ],
+        imageUrl: "",
+        description: "",
     });
 
     return gameId;
 }
 
+// ✅ Listen for real-time updates like players joining or game starting
 export function listenToGame(gameId) {
     const gameRef = doc(db, "games", gameId);
-    return onSnapshot(gameRef, (docSnap) => {
+    return onSnapshot(gameRef, async (docSnap) => {
         if (docSnap.exists()) {
             const gameData = docSnap.data();
+            lobbyPlayers.set(gameData.players || []);
             gameState.set(gameData);
 
             // Check if the game has started
-            if (gameData.isGameStarted) {
+            if (gameData.gotoGameFlag) {
                 console.log("Game started, redirecting players to /play...");
-                goto(`/play/${gameId}`);
+                goto(`/play`);
             }
 
-            if (gameData.isResults) {
-                console.log("Results, redirecting players to /result...");
+            if (gameData.gotoResultFlag) {
+                console.log("Game finished, redirecting players to /result...");
                 goto(`/result`);
             }
-        }
-    });
-}
 
-// ✅ Listen for players joining in real-time
-export function listenToLobby(gameId) {
-    const gameRef = doc(db, "games", gameId);
-    return onSnapshot(gameRef, (docSnap) => {
-        if (docSnap.exists()) {
-            lobbyPlayers.set(docSnap.data().players || []);
+            if (gameData.imageUrl && !get(imageUrl)) {
+                imageUrl.set(gameData.imageUrl);
+                description.set(gameData.description);
+            }
         }
     });
 }
@@ -80,7 +82,7 @@ export async function joinGame(gameId, playerName) {
     }
 }
 
-export async function submitWeapon(gameId, playerName, newWeapons) {
+export async function submitWeapons(gameId, playerName, newWeapons) {
     console.log(`Submitting weapons: ${newWeapons} for player: ${playerName}`);
     const gameRef = doc(db, "games", gameId);
     const gameSnap = await getDoc(gameRef);
@@ -88,22 +90,19 @@ export async function submitWeapon(gameId, playerName, newWeapons) {
     if (gameSnap.exists()) {
         let players = gameSnap.data().players || [];
         const playerIndex = players.findIndex((p) => p.name === playerName);
-        if (playerIndex !== -1) {
-            if (!players[playerIndex].weapons) {
-                players[playerIndex].weapons = [];
-            }
-            players[playerIndex].weapons = newWeapons;
-            if (players[1 - playerIndex].weapons.length > 0) {
-                await updateDoc(gameRef, {
-                    isResults: true,
-                });
-            
-            }
-        } else {
-            players.push({ name: playerName, avatar: "👤", weapons: newWeapons });
+        if (playerIndex == -1) {
+            return;
         }
+
+        players[playerIndex].weapons = newWeapons;
         await updateDoc(gameRef, { players });
         console.log("Weapon submitted successfully!");
+
+        if (players[1 - playerIndex].weapons.length > 0) {
+            await updateDoc(gameRef, {
+                gotoResultFlag: true,
+            });
+        }
     } else {
         console.error("Game does not exist!");
     }
@@ -137,24 +136,40 @@ export async function updatePlayerInfo(gameId, oldName, newName, newAvatar) {
     }
 }
 
+export async function getPlayerNames(gameId) {
+    const gameRef = doc(db, "games", gameId);
+    const gameSnap = await getDoc(gameRef);
+
+    if (gameSnap.exists()) {
+        let players = gameSnap.data().players || [];
+        return players.map(player => player.name);
+    } else {
+        console.error("Game does not exist!");
+        return [];
+    }
+}
+
 export async function resetGameFlag(gameId) {
     const gameRef = doc(db, "games", gameId);
-
     await updateDoc(gameRef, {
-        isGameStarted: false,
+        gotoGameFlag: false,
     });
-
     console.log("Game has started!");
+}
+
+export async function resetResultFlag(gameId) {
+    const gameRef = doc(db, "games", gameId);
+    await updateDoc(gameRef, {
+        gotoResultFlag: false,
+    });
 }
 
 export async function startGame(gameId) {
     const gameRef = doc(db, "games", gameId);
 
     await updateDoc(gameRef, {
-        isGameStarted: true,
+        gotoGameFlag: true,
     });
-
-    console.log("Game has started!");
 }
 
 export async function getWeapons1(gameId) {
@@ -192,5 +207,58 @@ export async function getWeapons2(gameId) {
     } else {
         console.error("Game does not exist!");
         return [];
+    }
+}
+
+export async function generateWeapons(gameId) {
+    const gameRef = doc(db, "games", gameId);
+
+    try {
+        // Run a Firestore transaction so only one player sends open ai request
+        const gameData = await runTransaction(db, async (transaction) => {
+            const gameSnap = await transaction.get(gameRef);
+
+            if (!gameSnap.exists()) {
+                console.error("Game does not exist!");
+                return;
+            }
+
+            const gameData = gameSnap.data();
+
+            if (gameData.generatingResults) {
+                console.log("Not sending OpenAI request - another client is already processing.");
+                return null;
+            }
+
+            transaction.update(gameRef, { generatingResults: true });
+            return gameData;
+        });
+
+        if (!gameData) return;
+
+        const player1Items = gameData.players[0]?.weapons || [];
+        const player2Items = gameData.players[1]?.weapons || [];
+        const name1 = gameData.players[0]?.name || "Player 1";
+        const name2 = gameData.players[1]?.name || "Player 2";
+
+        console.log("Sending OpenAI request...");
+        const response = await fetch("/api/generate-weapon", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ player1Items, player2Items, name1, name2 }),
+        });
+
+        const result = await response.json();
+
+        if (result.imageUrl) {
+            await updateDoc(gameRef, {
+                imageUrl: result.imageUrl,
+                description: result.description,
+                generatingResults: false,
+            });
+        }
+    } catch (error) {
+        console.error("Error in transaction:", error);
+        await updateDoc(gameRef, { generatingResults: false }); // Reset flag on error
     }
 }

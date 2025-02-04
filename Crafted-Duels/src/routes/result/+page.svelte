@@ -2,66 +2,17 @@
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
   import { get } from "svelte/store";
-  import { lobbyId, weapons } from "$lib/stores";
-  import { getWeapons1, getWeapons2 } from "../../game";
+  import { lobbyId } from "$lib/stores";
+  import {
+    imageUrl,
+    description,
+    resetResultFlag,
+    generateWeapons,
+  } from "../../game";
 
-  // Writable stores to hold the image URL and description
-  let imageUrl = writable("");
-  let description = writable("");
-
-  // Function to fetch the image and description from OpenAI API
-  async function generateWeaponAndImage() {
-    console.log("hi");
-    let player1Items = await getWeapons1(get(lobbyId));
-    console.log(player1Items);
-    let player2Items = await getWeapons2(get(lobbyId));
-    console.log(player2Items);
-    const prompt = `
-      Player 1 has the following items: ${player1Items.join(", ")}.
-      Player 2 has the following items: ${player2Items.join(", ")}.
-      Combine these items into a single powerful weapon.
-      Generate an image of the combined weapon and describe the scene of a duel between Player 1 and Player 2 based on their weapons.
-      Declare the winner, based on the weapons created.
-    `;
-
-    try {
-      // Make the request to your backend (or API route) for OpenAI
-      const response = await fetch(
-        `https://api.openai.com/v1/images/generations?Content-Type=application/json`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: "dall-e-3",
-            prompt: prompt,
-            n: 1,
-            size: "1024x1024",
-          }),
-        },
-      );
-
-      const result = await response.json();
-
-      // Assuming the result from your backend contains these fields
-      if (result && result.data && result.data[0]) {
-        const apiImageUrl = result.data[0].url; // Image URL
-        const apiDescription = result.data[0].revised_prompt; // Image description
-        console.log("Image URL:", apiImageUrl);
-
-        // Update your image and description stores
-        imageUrl.set(apiImageUrl);
-        description.set(apiDescription);
-      }
-    } catch (error) {
-      console.error("Error generating image:", error);
-    }
-  }
-
-  onMount(() => {
-    generateWeaponAndImage(); // Automatically fetch when the component is mounted
+  onMount(async () => {
+    resetResultFlag(get(lobbyId));
+    await generateWeapons(get(lobbyId));
   });
 </script>
 
@@ -71,7 +22,7 @@
 
   <div class="image-frame">
     {#if $imageUrl}
-      <img src={$imageUrl} alt="Weapon Duel Image" />
+      <img src={$imageUrl} alt="Weapon Duel" />
     {:else}
       <p>Loading image...</p>
     {/if}

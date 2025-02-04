@@ -1,14 +1,12 @@
 <script>
   import Timer from "$lib/components/Timer.svelte";
-  import { submitWeapon, resetGameFlag, listenToGame } from "../../../game";
+  import { submitWeapons, resetGameFlag } from "../../game";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
-  import { name, weapons } from "$lib/stores";
+  import { lobbyId, name } from "$lib/stores";
   import { goto } from "$app/navigation";
 
-  export let data;
-  const gameId = data.gameId;
   let playerId = get(name);
   let box1 = "";
   let box2 = "";
@@ -16,28 +14,27 @@
   let submitted = false;
 
   onMount(() => {
-    resetGameFlag(gameId);
-    listenToGame(gameId);
+    resetGameFlag(get(lobbyId));
   });
 
   function handleClick() {
-    console.log(gameId);
-    console.log("Weapons Selected:", box1, box2, box3);
     const selectedWeapons = [box1, box2, box3];
-    weapons.set(selectedWeapons);
-    submitWeapon(gameId, playerId, selectedWeapons);
-    console.log("Submitting weapons:", selectedWeapons);
+    submitWeapons(get(lobbyId), playerId, selectedWeapons);
     submitted = true;
   }
 </script>
 
 <div class="container">
   <Timer />
-  <h1 class="title">Pick Your Weapons</h1>
+  {#if !submitted}
+    <h1 class="title">Pick Your Weapons</h1>
+  {:else}
+    <h1 class="title">Waiting for opponent...</h1>
+  {/if}
   <div class="top-boxes">
-    <input class="box" bind:value={box1} placeholder="Enter Weapon 1" />
-    <input class="box" bind:value={box2} placeholder="Enter Weapon 2" />
-    <input class="box" bind:value={box3} placeholder="Enter Weapon 3" />
+    <input class="box" bind:value={box1} disabled={submitted} placeholder="Enter Weapon 1" />
+    <input class="box" bind:value={box2} disabled={submitted} placeholder="Enter Weapon 2" />
+    <input class="box" bind:value={box3} disabled={submitted} placeholder="Enter Weapon 3" />
   </div>
   {#if !submitted}
     <button class="bottom-box" on:click={handleClick}>Submit</button>

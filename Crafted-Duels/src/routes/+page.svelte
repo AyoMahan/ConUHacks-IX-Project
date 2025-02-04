@@ -3,14 +3,7 @@
   import { lobbyId } from "$lib/stores";
   import Rules from "$lib/components/Rules.svelte";
   import PopupMessage from "$lib/components/PopupMessage.svelte";
-  import {
-    createGame,
-    listenToGame,
-  } from "../game";
-  let playerId = "player-" + Math.floor(Math.random() * 1000); // Random player ID
-  let gameId = "";
-  let joiningGameId = "";
-  let inGame = false;
+  import { createGame } from "../game";
   let showHelpPopup = false;
 
   function navigateTo(path) {
@@ -18,23 +11,9 @@
   }
 
   async function createNewGame() {
-    gameId = await createGame();
+    let gameId = await createGame();
     lobbyId.set(gameId);
-    listenToGame(gameId);
     navigateTo(`/lobby`);
-  }
-
-  async function joinExistingGame() {
-    const success = await joinGame(joiningGameId);
-    if (success) {
-      gameId = joiningGameId;
-      inGame = true;
-      listenToGame(gameId);
-    }
-  }
-
-  async function submit() {
-    await submitWeapon(gameId, playerId, weapon);
   }
 
   function openHelpPopup() {
@@ -81,14 +60,17 @@
 </div>
 
 {#if showHelpPopup}
-    <PopupMessage message="⚔️ Welcome to the Ultimate Duel! ⚔️
+  <PopupMessage
+    message="⚔️ Welcome to the Ultimate Duel! ⚔️
 You have 30 seconds to unleash your creativity!
 Craft your weapon by writing 3 words—these will be your items of power.
 
 Once both players are ready, you'll enter the arena where the AI Judge will decide your fate.
 Think fast. Be bold. Conquer.
 
-Good luck, warrior! 🗡️" on:close={closeHelpPopup} />
+Good luck, warrior! 🗡️"
+    on:close={closeHelpPopup}
+  />
 {/if}
 
 <style>

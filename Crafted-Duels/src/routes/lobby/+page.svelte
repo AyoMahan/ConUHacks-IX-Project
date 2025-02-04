@@ -6,10 +6,7 @@
     import { lobbyId, name } from "$lib/stores";
     import {
         createGame,
-        joinGame,
         listenToGame,
-        submitWeapon,
-        listenToLobby,
         lobbyPlayers,
         updatePlayerInfo,
         startGame,
@@ -40,19 +37,9 @@
     let opponentName = "";
     let opponentAvatar = "❓";
 
-    async function joinLobby() {
-        if (!playerName) {
-            alert("Please enter your name");
-            return;
-        }
-
-        // Join the game in Firestore
-        await joinGame(roomCode, playerName, playerAvatar);
-    }
-
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text);
-        alert("Copied: " + text);
+        alert("Copied: " + text); // todo transform into tooltip
     }
 
     async function pushUpdateName() {
@@ -106,7 +93,6 @@
 
     onMount(() => {
         // Listen for real-time player updates
-        listenToLobby(roomCode);
         listenToGame(roomCode);
         lobbyPlayers.subscribe((data) => {
             players = data;
@@ -312,10 +298,6 @@ Good luck, warrior! 🗡️"
     }
     .back-btn {
         background: #c0392b;
-        color: antiquewhite;
-    }
-    .info-btn {
-        background: #3498db;
         color: antiquewhite;
     }
 

@@ -121,8 +121,10 @@
 
     onMount(async () => {
         // Create game
-        let roomCode = await createGame();
-        lobbyId.set(roomCode);
+        if (!get(lobbyId)) {
+            let roomCode = await createGame();
+            lobbyId.set(roomCode);
+        }
         // Listen for real-time player updates
         listenToGame($lobbyId);
         lobbyPlayers.subscribe((data) => {

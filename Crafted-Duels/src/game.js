@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { doc, setDoc, updateDoc, onSnapshot, getDoc, arrayUnion, runTransaction } from "firebase/firestore";
+import { doc, setDoc, updateDoc, getDoc, deleteDoc, onSnapshot, arrayUnion, runTransaction } from "firebase/firestore";
 import { writable, get } from "svelte/store";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
@@ -260,5 +260,23 @@ export async function generateWeapons(gameId) {
     } catch (error) {
         console.error("Error in transaction:", error);
         await updateDoc(gameRef, { generatingResults: false }); // Reset flag on error
+    }
+}
+
+export async function deleteGame(gameId) {
+    if (!gameId) {
+        console.error("Error: gameId is required to delete a game.");
+        return false;
+    }
+
+    const gameRef = doc(db, "games", gameId);
+
+    try {
+        await deleteDoc(gameRef);
+        console.log(`Game ${gameId} successfully deleted.`);
+        return true;
+    } catch (error) {
+        console.error("Error deleting game:", error);
+        return false;
     }
 }

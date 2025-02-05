@@ -1,8 +1,9 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import { get } from "svelte/store";
     import Rules from "$lib/components/Rules.svelte";
     import PopupMessage from "$lib/components/PopupMessage.svelte";
+    import Tooltip from "$lib/components/Tooltip.svelte";
     import { lobbyId, name } from "$lib/stores";
     import {
         createGame,
@@ -10,8 +11,10 @@
         lobbyPlayers,
         updatePlayerInfo,
         startGame,
+        deleteGame,
     } from "../../game";
     import { goto } from "$app/navigation";
+    import { browser } from "$app/environment";
     let showHelpPopup = false;
     let playerName = get(name) ?? "Player 1";
     let oldDbName = playerName;
@@ -19,7 +22,6 @@
     let oldAvatar = "🧑‍🚀";
     let playerAvatar = "🧑‍🚀";
     let players = [];
-    let roomCode = get(lobbyId);
     name.set(playerName);
     const avatars = [
         "🧑‍🚀",
@@ -33,13 +35,18 @@
         "🦊",
         "🐯",
     ];
-
-    let opponentName = "";
-    let opponentAvatar = "❓";
+    let showCopiedBox = false;
+    let copyTimeout;
+    let showPlayersBox = false;
+    let playerTimeout;
 
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text);
-        alert("Copied: " + text); // todo transform into tooltip
+        showCopiedBox = true;
+        clearTimeout(copyTimeout);
+        copyTimeout = setTimeout(() => {
+            showCopiedBox = false;
+        }, 1000);
     }
 
     async function pushUpdateName() {
@@ -48,7 +55,7 @@
             return;
         }
         const success = await updatePlayerInfo(
-            roomCode,
+            $lobbyId,
             oldDbName,
             playerName,
             playerAvatar,
@@ -65,15 +72,11 @@
 
     async function updateAvatar() {
         const success = await updatePlayerInfo(
-            roomCode,
+            $lobbyId,
             playerName,
             playerName,
             playerAvatar,
         );
-    }
-
-    function navigateTo(path) {
-        goto(path);
     }
 
     function updateName(newName) {
@@ -91,12 +94,49 @@
         showHelpPopup = false;
     }
 
-    onMount(() => {
+    async function goToMenu() {
+        await deleteGame($lobbyId);
+        lobbyId.set("");
+        goto("/");
+    }
+
+    function start() {
+        if (players.length <= 1) {
+            showPlayersBox = true;
+            clearTimeout(playerTimeout);
+            playerTimeout = setTimeout(() => {
+                showPlayersBox = false;
+            }, 3000);
+        } else {
+            showPlayersBox = false;
+            startGame($lobbyId);
+        }
+    }
+
+    async function handleBeforeUnload(event) {
+        if ($lobbyId) {
+            await deleteGame($lobbyId);
+        }
+    }
+
+    onMount(async () => {
+        // Create game
+        let roomCode = await createGame();
+        lobbyId.set(roomCode);
         // Listen for real-time player updates
-        listenToGame(roomCode);
+        listenToGame($lobbyId);
         lobbyPlayers.subscribe((data) => {
             players = data;
         });
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("popstate", goToMenu);
+    });
+
+    onDestroy(() => {
+        if (browser) {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.removeEventListener("popstate", goToMenu);
+        }
     });
 </script>
 
@@ -128,11 +168,13 @@
     </h2>
 
     <h3 class="fade-in room-code-container">
-        Room Code: <span class="room-code glow">{roomCode}</span>
-        <button
-            class="button copy-btn neon-button"
-            on:click={() => copyToClipboard(roomCode)}>📋 Copy</button
-        >
+        Room Code: <span class="room-code glow">{$lobbyId}</span>
+        <Tooltip title="Copied!" isEnabled={showCopiedBox}>
+            <button
+                class="button copy-btn neon-button"
+                on:click={() => copyToClipboard($lobbyId)}>📋 Copy</button
+            >
+        </Tooltip>
     </h3>
 
     <div class="vs-container fade-in">
@@ -151,14 +193,17 @@
         <div class="footer">
             <Rules on:click={openHelpPopup} />
         </div>
-        <button
-            class="button back-btn neon-button"
-            on:click={() => navigateTo("/")}>⬅️ Back</button
+        <button class="button back-btn neon-button" on:click={goToMenu}
+            >⬅️ Back</button
         >
-        <button
-            class="button start-btn neon-button"
-            on:click={() => startGame(roomCode)}>🚀 Start</button
+        <Tooltip
+            title="Two players are required to start!"
+            isEnabled={showPlayersBox}
         >
+            <button class="button start-btn neon-button" on:click={start}
+                >🚀 Start</button
+            >
+        </Tooltip>
     </div>
 </div>
 

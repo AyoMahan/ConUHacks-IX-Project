@@ -3,18 +3,7 @@
   import { lobbyId } from "$lib/stores";
   import Rules from "$lib/components/Rules.svelte";
   import PopupMessage from "$lib/components/PopupMessage.svelte";
-  import { createGame } from "../game";
   let showHelpPopup = false;
-
-  function navigateTo(path) {
-    goto(path);
-  }
-
-  async function createNewGame() {
-    let gameId = await createGame();
-    lobbyId.set(gameId);
-    navigateTo(`/lobby`);
-  }
 
   function openHelpPopup() {
     showHelpPopup = true;
@@ -36,9 +25,9 @@
         class="create-btn"
         role="button"
         tabindex="0"
-        on:click={createNewGame}
+        on:click={() => goto(`/lobby`)}
         on:keydown={(e) =>
-          (e.key === "Enter" || e.key === " ") && navigateTo("/lobby")}
+          (e.key === "Enter" || e.key === " ") && goto("/lobby")}
       >
         Create
       </div>
@@ -46,9 +35,9 @@
         class="join-btn"
         role="button"
         tabindex="0"
-        on:click={() => navigateTo("/join")}
+        on:click={() => goto("/join")}
         on:keydown={(e) =>
-          (e.key === "Enter" || e.key === " ") && navigateTo("/join")}
+          (e.key === "Enter" || e.key === " ") && goto("/join")}
       >
         Join
       </div>

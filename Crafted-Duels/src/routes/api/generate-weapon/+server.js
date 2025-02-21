@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import { OPENAI_API_KEY } from "$env/static/private";
+import { VITE_OPENAI_API_KEY } from "$env/static/private";
 
 export async function POST({ request }) {
     const { player1Items, player2Items, name1, name2 } = await request.json();
